@@ -7,20 +7,17 @@
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet"/>
   <style>
-    /* ═══════════════════════════════
-       TOKENS
-    ═══════════════════════════════ */
     :root {
-      --green:   #1A7A3C;   /* Verde escuro premium */
-      --green-l: #22A050;   /* Verde médio hover */
-      --gold:    #C9A84C;   /* Dourado */
-      --gold-l:  #E8C96A;   /* Dourado claro */
+      --green:   #1A7A3C;
+      --green-l: #22A050;
+      --gold:    #C9A84C;
+      --gold-l:  #E8C96A;
       --white:   #FFFFFF;
-      --off:     #0F0F0F;   /* Preto off para seções alternadas */
-      --dark:    #060606;   /* Preto profundo */
-      --dark2:   #111111;   /* Preto card */
+      --off:     #0F0F0F;
+      --dark:    #060606;
+      --dark2:   #111111;
       --gray:    #888;
-      --light-g: #2A2A2A;   /* Borda escura */
+      --light-g: #2A2A2A;
       --radius:  12px;
     }
 
@@ -33,9 +30,7 @@
       overflow-x: hidden;
     }
 
-    /* ═══════════════════════════════
-       ANNOUNCEMENT BAR
-    ═══════════════════════════════ */
+    /* ── ANNOUNCEMENT BAR ── */
     .announce {
       background: var(--dark2);
       color: var(--gold);
@@ -49,9 +44,7 @@
     }
     .announce span { color: #bbb; font-weight: 400; letter-spacing: 0; text-transform: none; }
 
-    /* ═══════════════════════════════
-       NAV
-    ═══════════════════════════════ */
+    /* ── NAV ── */
     nav {
       position: sticky; top: 0; z-index: 200;
       background: rgba(6,6,6,.96);
@@ -83,6 +76,8 @@
     .nav-links a:hover { color: var(--gold); border-color: var(--gold); }
 
     .nav-right { display: flex; gap: 10px; align-items: center; }
+
+    /* Botão carrinho */
     .btn-cart {
       background: var(--gold); color: var(--dark);
       border: none; border-radius: 8px;
@@ -91,6 +86,8 @@
       transition: background .2s, transform .15s;
     }
     .btn-cart:hover { background: var(--gold-l); transform: translateY(-1px); }
+
+    /* Botão login (não logado) */
     .btn-login {
       background: none; border: 2px solid var(--light-g); border-radius: 8px;
       padding: 7px 14px; font-weight: 700; font-size: .82rem; cursor: pointer; color: #bbb;
@@ -98,15 +95,115 @@
     }
     .btn-login:hover { border-color: var(--gold); color: var(--gold); }
 
-    /* ═══════════════════════════════
-       HERO
-    ═══════════════════════════════ */
+    /* ── AVATAR / DROPDOWN LOGADO ── */
+    .user-menu-wrap {
+      position: relative;
+      display: none; /* mostrado via JS */
+    }
+    .user-menu-wrap.visible { display: block; }
+
+    .user-trigger {
+      display: flex; align-items: center; gap: 10px;
+      background: rgba(201,168,76,.08);
+      border: 1.5px solid rgba(201,168,76,.3);
+      border-radius: 40px;
+      padding: 5px 14px 5px 6px;
+      cursor: pointer;
+      transition: background .2s, border-color .2s;
+    }
+    .user-trigger:hover { background: rgba(201,168,76,.15); border-color: var(--gold); }
+
+    .user-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--green), var(--green-l));
+      display: flex; align-items: center; justify-content: center;
+      font-size: .85rem; font-weight: 800; color: #fff;
+      flex-shrink: 0;
+    }
+    .user-name {
+      font-size: .84rem; font-weight: 700; color: var(--white); max-width: 110px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .user-caret {
+      font-size: .6rem; color: var(--gold); transition: transform .2s;
+      margin-left: 2px;
+    }
+    .user-menu-wrap.open .user-caret { transform: rotate(180deg); }
+
+    /* Dropdown */
+    .user-dropdown {
+      position: absolute; top: calc(100% + 12px); right: 0;
+      background: #111;
+      border: 1px solid rgba(201,168,76,.2);
+      border-radius: 16px;
+      width: 260px;
+      box-shadow: 0 20px 60px rgba(0,0,0,.7);
+      overflow: hidden;
+      opacity: 0; pointer-events: none;
+      transform: translateY(-8px) scale(.97);
+      transition: opacity .2s, transform .2s;
+      z-index: 300;
+    }
+    .user-menu-wrap.open .user-dropdown {
+      opacity: 1; pointer-events: all;
+      transform: translateY(0) scale(1);
+    }
+
+    .dd-header {
+      background: linear-gradient(135deg, #0d2b16, #111111);
+      padding: 20px;
+      display: flex; align-items: center; gap: 14px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .dd-avatar {
+      width: 46px; height: 46px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--green), var(--green-l));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; font-weight: 800; color: #fff;
+      flex-shrink: 0;
+      border: 2px solid rgba(201,168,76,.3);
+    }
+    .dd-info-name { font-size: .95rem; font-weight: 800; color: #fff; }
+    .dd-info-email { font-size: .75rem; color: #888; margin-top: 2px; }
+
+    .dd-stats {
+      display: flex;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .dd-stat {
+      flex: 1; padding: 14px; text-align: center;
+      border-right: 1px solid rgba(255,255,255,.06);
+    }
+    .dd-stat:last-child { border-right: none; }
+    .dd-stat-n { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; color: var(--gold); }
+    .dd-stat-l { font-size: .68rem; color: #666; margin-top: 1px; }
+
+    .dd-menu { padding: 8px; }
+    .dd-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 10px 12px; border-radius: 10px;
+      color: #bbb; font-size: .85rem; font-weight: 700;
+      cursor: pointer; transition: background .15s, color .15s;
+      text-decoration: none;
+    }
+    .dd-item:hover { background: rgba(255,255,255,.05); color: var(--white); }
+    .dd-item .dd-icon {
+      width: 30px; height: 30px; border-radius: 8px;
+      background: rgba(201,168,76,.08);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .85rem; flex-shrink: 0;
+    }
+    .dd-item.danger { color: #ff6b6b; }
+    .dd-item.danger:hover { background: rgba(255,107,107,.08); }
+    .dd-item.danger .dd-icon { background: rgba(255,107,107,.08); }
+    .dd-sep { height: 1px; background: rgba(255,255,255,.06); margin: 6px 8px; }
+
+    /* ── HERO ── */
     .hero {
       min-height: 90vh;
       display: grid; grid-template-columns: 1fr 1fr;
       position: relative; overflow: hidden;
     }
-    /* left – text */
     .hero-left {
       background: var(--dark);
       padding: 80px 60px 80px 64px;
@@ -144,7 +241,6 @@
       max-width: 400px;
       animation: fadeUp .5s .2s ease both;
     }
-
     .hero-badges {
       display: flex; gap: 10px; flex-wrap: wrap; margin-top: 28px;
       animation: fadeUp .5s .3s ease both;
@@ -155,7 +251,6 @@
       padding: 6px 14px; border-radius: 20px;
       display: flex; align-items: center; gap: 5px;
     }
-
     .hero-ctas {
       display: flex; gap: 12px; flex-wrap: wrap; margin-top: 36px;
       animation: fadeUp .5s .35s ease both;
@@ -181,7 +276,6 @@
     }
     .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
 
-    /* right – product visual */
     .hero-right {
       background: linear-gradient(145deg, #111111 0%, #0a0a0a 100%);
       display: flex; align-items: center; justify-content: center;
@@ -195,13 +289,11 @@
         radial-gradient(ellipse 80% 60% at 60% 40%, rgba(26,122,60,.12), transparent 70%),
         radial-gradient(ellipse 50% 50% at 20% 80%, rgba(201,168,76,.07), transparent 60%);
     }
-    /* diagonal stripe gold/green */
     .brasil-stripe {
       position: absolute; top: 0; right: 0; bottom: 0;
       width: 6px;
       background: linear-gradient(180deg, var(--gold) 50%, var(--green) 50%);
     }
-
     .product-showcase {
       position: relative; z-index: 1;
       display: flex; flex-direction: column; align-items: center; gap: 20px;
@@ -224,7 +316,6 @@
       padding: 8px 14px; border-radius: 10px;
       box-shadow: 0 4px 14px rgba(201,168,76,.4);
     }
-
     .product-tags { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
     .ptag {
       background: var(--dark2);
@@ -233,13 +324,10 @@
       padding: 8px 14px; font-size: .8rem; font-weight: 700; color: #bbb;
       display: flex; align-items: center; gap: 5px;
       box-shadow: 0 2px 8px rgba(0,0,0,.3);
-      animation: fadeUp .5s ease both;
     }
     .ptag.green { border-color: rgba(26,122,60,.4); color: var(--green-l); background: rgba(26,122,60,.08); }
 
-    /* ═══════════════════════════════
-       BRAND STRIP
-    ═══════════════════════════════ */
+    /* ── BRAND STRIP ── */
     .brand-strip {
       background: var(--dark2);
       border-top: 1px solid rgba(201,168,76,.2);
@@ -254,9 +342,7 @@
     }
     .brand-strip .item span { font-size: 1.3rem; }
 
-    /* ═══════════════════════════════
-       SECTION SHARED
-    ═══════════════════════════════ */
+    /* ── SECTIONS ── */
     section { padding: 88px 64px; }
     .section-eyebrow {
       font-size: .75rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase;
@@ -273,9 +359,7 @@
       max-width: 540px;
     }
 
-    /* ═══════════════════════════════
-       DIFERENCIAIS
-    ═══════════════════════════════ */
+    /* ── DIFERENCIAIS ── */
     #diferenciais { background: var(--off); }
     .diff-grid {
       display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -297,9 +381,7 @@
     .diff-card h3 { font-size: 1.05rem; font-weight: 800; margin-bottom: 8px; color: var(--white); }
     .diff-card p  { font-size: .87rem; color: var(--gray); line-height: 1.6; }
 
-    /* ═══════════════════════════════
-       KITS / PRODUTOS
-    ═══════════════════════════════ */
+    /* ── KITS ── */
     #kits { background: var(--dark); }
     .kits-header { display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 16px; margin-bottom: 48px; }
     .products-grid {
@@ -311,14 +393,24 @@
       border-radius: 16px; overflow: hidden;
       transition: transform .25s, box-shadow .25s, border-color .25s;
       background: var(--dark2);
+      position: relative;
     }
-    .product-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(0,0,0,.6); border-color: rgba(201,168,76,.3); }
+    .product-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at top, rgba(201,168,76,.08), transparent 60%);
+      opacity: 0; transition: .4s; pointer-events: none;
+    }
+    .product-card:hover::before { opacity: 1; }
+    .product-card:hover { transform: translateY(-10px) scale(1.02); box-shadow: 0 16px 40px rgba(0,0,0,.6); border-color: rgba(201,168,76,.3); }
     .product-img {
       height: 200px;
       display: flex; align-items: center; justify-content: center;
       font-size: 5rem;
       position: relative; overflow: hidden;
+      transition: transform .4s ease; cursor: pointer;
     }
+    .product-card:hover .product-img { transform: scale(1.08); }
     .product-img.green-bg  { background: linear-gradient(135deg, #0d2b16, #163d22); }
     .product-img.yellow-bg { background: linear-gradient(135deg, #2a2210, #3a2f0d); }
     .product-img.blue-bg   { background: linear-gradient(135deg, #0f1a2e, #162440); }
@@ -335,6 +427,11 @@
       font-size: .68rem; font-weight: 800;
       padding: 4px 10px; border-radius: 6px;
     }
+    .product-photo {
+      width: 100%; height: 100%; object-fit: contain;
+      transition: transform .5s ease, filter .3s ease;
+    }
+    .product-card:hover .product-photo { transform: scale(1.12); filter: brightness(1.08); }
     .product-info { padding: 20px; }
     .product-info h3 { font-size: .97rem; font-weight: 800; margin-bottom: 4px; color: var(--white); }
     .product-info .desc { font-size: .82rem; color: var(--gray); margin-bottom: 14px; }
@@ -353,15 +450,8 @@
     }
     .btn-buy:hover { background: var(--gold-l); }
 
-    /* ═══════════════════════════════
-       TECHNOLOGY SECTION
-    ═══════════════════════════════ */
-    #tecnologia {
-      background: var(--dark);
-      color: var(--white);
-    }
-    #tecnologia .section-title { color: var(--white); }
-    #tecnologia .section-sub   { color: #888; }
+    /* ── TECHNOLOGY ── */
+    #tecnologia { background: var(--dark); color: var(--white); }
     .tech-wrapper {
       display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; margin-top: 48px;
     }
@@ -379,19 +469,16 @@
       position: absolute; inset: 0;
       background: radial-gradient(ellipse at center, rgba(201,168,76,.07), transparent 70%);
     }
-    .tech-visual .rain {
-      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-      overflow: hidden;
-    }
+    .tech-visual .rain { position: absolute; top: 0; left: 0; right: 0; bottom: 0; overflow: hidden; }
     .drop {
       position: absolute; width: 2px; border-radius: 2px;
       background: linear-gradient(180deg, transparent, rgba(201,168,76,.5));
       animation: rain linear infinite;
     }
     @keyframes rain {
-      0% { transform: translateY(-20px); opacity: 0; }
-      10% { opacity: 1; }
-      90% { opacity: .6; }
+      0%   { transform: translateY(-20px); opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: .6; }
       100% { transform: translateY(320px); opacity: 0; }
     }
     .tech-list { display: flex; flex-direction: column; gap: 20px; }
@@ -403,19 +490,14 @@
       transition: background .2s, border-color .2s;
     }
     .tech-item:hover { background: rgba(201,168,76,.06); border-color: rgba(201,168,76,.25); }
-    .tech-num {
-      font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--gold);
-      line-height: 1; min-width: 32px;
-    }
+    .tech-num { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--gold); line-height: 1; min-width: 32px; }
     .tech-item h4 { font-size: .95rem; font-weight: 800; margin-bottom: 4px; }
     .tech-item p  { font-size: .83rem; color: #aaa; line-height: 1.5; }
 
-    /* ═══════════════════════════════
-       SUSTAINABILITY
-    ═══════════════════════════════ */
+    /* ── SUSTENTABILIDADE ── */
     #sustentabilidade { background: var(--off); }
     .sustain-wrap {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; margin-top: 0;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center;
     }
     .sustain-visual {
       background: linear-gradient(135deg, #0d2b16, #112010);
@@ -425,16 +507,12 @@
       font-size: 6rem;
     }
     .sustain-points { display: flex; flex-direction: column; gap: 16px; margin-top: 28px; }
-    .spoint {
-      display: flex; gap: 12px; align-items: flex-start;
-    }
+    .spoint { display: flex; gap: 12px; align-items: flex-start; }
     .spoint-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--gold); margin-top: 6px; flex-shrink: 0; }
     .spoint h4 { font-weight: 800; font-size: .95rem; margin-bottom: 3px; color: var(--white); }
     .spoint p  { font-size: .85rem; color: var(--gray); }
 
-    /* ═══════════════════════════════
-       PUBLIC / TARGET
-    ═══════════════════════════════ */
+    /* ── PÚBLICO ── */
     #publico { background: var(--dark); }
     .pub-grid {
       display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
@@ -451,9 +529,7 @@
     .pub-card h3  { font-size: .9rem; font-weight: 800; color: var(--white); }
     .pub-card p   { font-size: .78rem; color: var(--gray); margin-top: 4px; }
 
-    /* ═══════════════════════════════
-       CTA BANNER
-    ═══════════════════════════════ */
+    /* ── CTA BANNER ── */
     .cta-section { padding: 0 64px 80px; }
     .cta-banner {
       background: linear-gradient(135deg, #0d2b16 0%, #111111 50%, #0a0a0a 100%);
@@ -476,9 +552,7 @@
     .cta-banner p { color: rgba(255,255,255,.5); font-size: .95rem; margin-top: 10px; max-width: 400px; }
     .cta-actions { display: flex; flex-direction: column; gap: 10px; }
 
-    /* ═══════════════════════════════
-       FOOTER
-    ═══════════════════════════════ */
+    /* ── FOOTER ── */
     footer {
       background: var(--dark);
       color: #aaa;
@@ -509,9 +583,7 @@
       padding: 5px 12px; font-size: .72rem; font-weight: 700; color: #888;
     }
 
-    /* ═══════════════════════════════
-       ANIMATIONS
-    ═══════════════════════════════ */
+    /* ── ANIMATIONS ── */
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(22px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -521,9 +593,429 @@
       50%      { transform: translateY(-12px); }
     }
 
-    /* ═══════════════════════════════
-       RESPONSIVE
-    ═══════════════════════════════ */
+    /* ══════════════════════════════════════════════
+       MODAL DE LOGIN / CADASTRO / RECUPERAR SENHA
+    ══════════════════════════════════════════════ */
+    #auth-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.82);
+      backdrop-filter: blur(10px);
+      z-index: 9000;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity .3s;
+    }
+    #auth-overlay.open {
+      opacity: 1; pointer-events: all;
+    }
+
+    .auth-box {
+      width: 440px; max-width: 94vw;
+      background: #0e0e0e;
+      border: 1px solid rgba(201,168,76,.22);
+      border-radius: 24px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 32px 80px rgba(0,0,0,.8);
+      animation: authPop .35s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes authPop {
+      from { transform: scale(.88) translateY(24px); opacity: 0; }
+      to   { transform: scale(1) translateY(0);    opacity: 1; }
+    }
+
+    /* Fechar */
+    .auth-close {
+      position: absolute; top: 16px; right: 16px;
+      background: rgba(255,255,255,.06); border: none;
+      width: 32px; height: 32px; border-radius: 50%;
+      color: #888; font-size: 1rem; cursor: pointer; z-index: 2;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s, color .2s;
+    }
+    .auth-close:hover { background: rgba(255,255,255,.12); color: #fff; }
+
+    /* Topo verde do modal */
+    .auth-header {
+      background: linear-gradient(135deg, #0d2b16, #0a1e10);
+      padding: 32px 32px 28px;
+      text-align: center;
+      border-bottom: 1px solid rgba(201,168,76,.12);
+    }
+    .auth-logo {
+      width: 64px; height: 64px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--green), var(--green-l));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem; margin: 0 auto 14px;
+      box-shadow: 0 8px 24px rgba(26,122,60,.4);
+    }
+    .auth-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem; color: #fff; letter-spacing: .04em;
+    }
+    .auth-title span { color: var(--gold); }
+    .auth-subtitle { font-size: .82rem; color: #777; margin-top: 6px; }
+
+    /* Abas */
+    .auth-tabs {
+      display: flex;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+    .auth-tab {
+      flex: 1; padding: 14px;
+      text-align: center; font-size: .84rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: .06em;
+      color: #555; cursor: pointer;
+      border-bottom: 2px solid transparent;
+      transition: color .2s, border-color .2s;
+      background: none; border-top: none; border-left: none; border-right: none;
+    }
+    .auth-tab.active {
+      color: var(--gold);
+      border-bottom-color: var(--gold);
+    }
+
+    /* Corpo do modal */
+    .auth-body { padding: 28px 32px 32px; }
+
+    /* Painéis (login / cadastro / recuperar) */
+    .auth-panel { display: none; }
+    .auth-panel.active { display: block; }
+
+    /* Inputs */
+    .auth-field { margin-bottom: 16px; }
+    .auth-field label {
+      display: block; font-size: .78rem; font-weight: 700;
+      color: #888; margin-bottom: 6px; text-transform: uppercase; letter-spacing: .06em;
+    }
+    .auth-field .field-wrap {
+      position: relative;
+    }
+    .auth-field input {
+      width: 100%;
+      background: #080808;
+      border: 1.5px solid #1e1e1e;
+      border-radius: 10px;
+      padding: 13px 16px;
+      color: #fff;
+      font-size: .92rem;
+      font-family: 'Nunito', sans-serif;
+      transition: border-color .2s, box-shadow .2s;
+      outline: none;
+    }
+    .auth-field input:focus {
+      border-color: rgba(201,168,76,.5);
+      box-shadow: 0 0 0 3px rgba(201,168,76,.08);
+    }
+    .auth-field input.error {
+      border-color: rgba(255,80,80,.5);
+      box-shadow: 0 0 0 3px rgba(255,80,80,.07);
+    }
+    .auth-field .field-icon {
+      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+      font-size: .9rem; color: #444; cursor: pointer; user-select: none;
+      transition: color .2s;
+    }
+    .auth-field .field-icon:hover { color: var(--gold); }
+    .auth-field .field-error {
+      font-size: .72rem; color: #ff6b6b; margin-top: 5px;
+      display: none;
+    }
+    .auth-field.has-error .field-error { display: block; }
+
+    /* Esqueci senha link */
+    .auth-forgot {
+      text-align: right; margin-top: -8px; margin-bottom: 18px;
+    }
+    .auth-forgot a {
+      font-size: .78rem; color: var(--gold); text-decoration: none; font-weight: 700;
+      transition: opacity .2s;
+    }
+    .auth-forgot a:hover { opacity: .7; }
+
+    /* Checkbox termos */
+    .auth-terms {
+      display: flex; align-items: flex-start; gap: 10px;
+      margin-bottom: 20px;
+    }
+    .auth-terms input[type=checkbox] {
+      width: 18px; height: 18px; flex-shrink: 0;
+      accent-color: var(--gold);
+      cursor: pointer; margin-top: 1px;
+    }
+    .auth-terms label {
+      font-size: .78rem; color: #888; cursor: pointer; line-height: 1.5;
+    }
+    .auth-terms label a { color: var(--gold); text-decoration: none; }
+
+    /* Botão principal do modal */
+    .auth-submit {
+      width: 100%;
+      background: var(--gold); color: #000;
+      border: none; border-radius: 10px;
+      padding: 14px; font-weight: 800; font-size: .96rem;
+      cursor: pointer; font-family: 'Nunito', sans-serif;
+      transition: background .2s, transform .15s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .auth-submit:hover { background: var(--gold-l); transform: translateY(-1px); }
+    .auth-submit:disabled { background: #333; color: #666; cursor: not-allowed; transform: none; }
+
+    /* Divisor */
+    .auth-divider {
+      display: flex; align-items: center; gap: 12px;
+      margin: 20px 0; color: #333; font-size: .78rem;
+    }
+    .auth-divider::before,
+    .auth-divider::after {
+      content: ''; flex: 1; height: 1px; background: #1e1e1e;
+    }
+
+    /* Google */
+    .auth-google {
+      width: 100%;
+      background: #111; color: #ccc;
+      border: 1.5px solid #1e1e1e; border-radius: 10px;
+      padding: 12px; font-weight: 700; font-size: .88rem;
+      cursor: pointer; font-family: 'Nunito', sans-serif;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      transition: border-color .2s, background .2s;
+    }
+    .auth-google:hover { border-color: rgba(201,168,76,.3); background: #161616; }
+    .google-g {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: linear-gradient(135deg, #4285F4, #34A853, #FBBC05, #EA4335);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .65rem; font-weight: 900; color: #fff;
+    }
+
+    /* Troca de painel */
+    .auth-switch {
+      text-align: center; margin-top: 22px;
+      font-size: .8rem; color: #555;
+    }
+    .auth-switch a {
+      color: var(--gold); text-decoration: none; font-weight: 700; cursor: pointer;
+    }
+    .auth-switch a:hover { opacity: .7; }
+
+    /* Mensagem de sucesso */
+    .auth-success {
+      text-align: center; padding: 24px 0;
+    }
+    .auth-success .success-icon {
+      font-size: 3rem; margin-bottom: 16px;
+    }
+    .auth-success h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem; color: var(--green-l); margin-bottom: 8px;
+    }
+    .auth-success p { font-size: .85rem; color: #888; line-height: 1.6; }
+
+    /* Força da senha */
+    .password-strength {
+      margin-top: 8px; height: 4px; border-radius: 2px;
+      background: #1e1e1e; overflow: hidden;
+    }
+    .password-strength-bar {
+      height: 100%; border-radius: 2px;
+      transition: width .3s, background .3s;
+      width: 0%;
+    }
+    .strength-label {
+      font-size: .68rem; margin-top: 4px;
+      font-weight: 700; text-align: right;
+    }
+
+    /* ══════════════════════════════════════════════
+       CARRINHO (sidebar)
+    ══════════════════════════════════════════════ */
+    #overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.7);
+      backdrop-filter: blur(6px);
+      z-index: 998;
+      opacity: 0; pointer-events: none;
+      transition: .3s;
+    }
+    #overlay.active { opacity: 1; pointer-events: all; }
+
+    #cart-sidebar {
+      position: fixed; top: 0; right: -420px;
+      width: 400px; max-width: 100%; height: 100vh;
+      background: #111; z-index: 999;
+      border-left: 2px solid var(--gold);
+      transition: .4s ease;
+      display: flex; flex-direction: column;
+    }
+    #cart-sidebar.open { right: 0; }
+
+    .cart-header {
+      padding: 24px; border-bottom: 1px solid rgba(255,255,255,.08);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .cart-header h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.5rem; color: var(--gold); }
+    .cart-header button { background: none; border: none; color: #999; font-size: 1.4rem; cursor: pointer; }
+
+    #cart-items { flex: 1; overflow-y: auto; padding: 20px; }
+
+    .cart-item {
+      display: flex; gap: 14px;
+      background: #1a1a1a; border: 1px solid rgba(255,255,255,.08);
+      border-radius: 14px; padding: 14px; margin-bottom: 16px;
+      animation: cartFade .4s ease;
+    }
+    @keyframes cartFade {
+      from { opacity: 0; transform: translateX(30px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    .cart-item-image {
+      width: 70px; height: 70px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center; font-size: 2rem;
+    }
+    .cart-item-image img { width: 100%; height: 100%; object-fit: contain; }
+    .cart-item-info { flex: 1; }
+    .cart-item-info h4 { font-size: .92rem; margin-bottom: 6px; }
+    .cart-item-info p  { color: var(--gold); font-weight: 800; }
+    .cart-item-actions {
+      display: flex; align-items: center; gap: 10px; margin-top: 8px;
+    }
+    .qty-btn {
+      width: 24px; height: 24px; border-radius: 6px;
+      border: none; background: var(--gold);
+      color: #000; font-weight: 800; cursor: pointer;
+    }
+    .remove-item { background: none; border: none; color: #ff6b6b; cursor: pointer; font-size: .8rem; }
+
+    .cart-footer { padding: 24px; border-top: 1px solid rgba(255,255,255,.08); }
+    .cart-total {
+      display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 1.1rem;
+    }
+    .checkout-btn {
+      width: 100%; background: var(--gold); color: #000;
+      border: none; border-radius: 10px; padding: 14px;
+      font-weight: 800; cursor: pointer; transition: .2s;
+    }
+    .checkout-btn:hover { transform: translateY(-2px); background: var(--gold-l); }
+
+    /* ── MODAL IMAGEM ── */
+    #image-modal {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.92); z-index: 9999;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none; transition: .3s;
+    }
+    #image-modal.open { opacity: 1; pointer-events: all; }
+    #image-preview {
+      width: 420px; height: 420px; border-radius: 24px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10rem;
+      animation: zoomIn .3s ease;
+    }
+    @keyframes zoomIn {
+      from { transform: scale(.7); opacity: 0; }
+      to   { transform: scale(1);  opacity: 1; }
+    }
+    #close-image { position: absolute; top: 30px; right: 30px; color: white; font-size: 2rem; cursor: pointer; }
+    .zoomed-image { width: 100%; max-width: 500px; object-fit: contain; animation: zoomIn .3s ease; }
+
+    /* ── WIDGET ACESSIBILIDADE ── */
+    #a11y-toggle {
+      position: fixed; bottom: 28px; left: 28px; z-index: 9998;
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--gold); color: var(--dark);
+      border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem;
+      box-shadow: 0 4px 20px rgba(201,168,76,.5);
+      transition: transform .2s, box-shadow .2s;
+      animation: pulseBtn 3s ease-in-out infinite;
+    }
+    #a11y-toggle:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(201,168,76,.7); }
+    @keyframes pulseBtn {
+      0%,100% { box-shadow: 0 4px 20px rgba(201,168,76,.5); }
+      50%      { box-shadow: 0 4px 32px rgba(201,168,76,.85); }
+    }
+    #a11y-panel {
+      position: fixed; bottom: 96px; left: 28px; z-index: 9997;
+      width: 300px; background: #111;
+      border: 1px solid rgba(201,168,76,.3); border-radius: 18px;
+      padding: 20px; box-shadow: 0 16px 56px rgba(0,0,0,.7);
+      transform: translateY(20px) scale(.95); opacity: 0; pointer-events: none;
+      transition: transform .25s ease, opacity .25s ease;
+    }
+    #a11y-panel.open { transform: translateY(0) scale(1); opacity: 1; pointer-events: all; }
+    .a11y-panel-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 16px; padding-bottom: 14px;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+    }
+    .a11y-panel-header h3 { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: .06em; color: var(--gold); }
+    .a11y-reset {
+      background: none; border: 1px solid rgba(255,255,255,.15);
+      color: #888; font-size: .72rem; font-weight: 700;
+      padding: 4px 10px; border-radius: 6px; cursor: pointer;
+      transition: border-color .2s, color .2s;
+    }
+    .a11y-reset:hover { border-color: var(--gold); color: var(--gold); }
+    .a11y-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+    .a11y-btn-item {
+      display: flex; flex-direction: column; align-items: center; gap: 5px;
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px; padding: 12px 8px; cursor: pointer;
+      font-size: .72rem; font-weight: 700; color: #bbb;
+      text-align: center; line-height: 1.3;
+      transition: background .2s, border-color .2s, color .2s;
+      user-select: none;
+    }
+    .a11y-btn-item:hover { background: rgba(201,168,76,.08); border-color: rgba(201,168,76,.3); color: var(--gold); }
+    .a11y-btn-item.active { background: rgba(201,168,76,.15); border-color: var(--gold); color: var(--gold); }
+    .a11y-btn-item .ico { font-size: 1.4rem; }
+    .a11y-font-row, .a11y-spacing-row {
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px; padding: 10px 14px; margin-bottom: 8px;
+    }
+    .a11y-font-row span, .a11y-spacing-row span { font-size: .75rem; font-weight: 700; color: #bbb; }
+    .a11y-font-controls { display: flex; gap: 6px; align-items: center; }
+    .a11y-font-btn {
+      width: 30px; height: 30px;
+      background: rgba(201,168,76,.12); border: 1px solid rgba(201,168,76,.3);
+      color: var(--gold); font-size: 1rem; font-weight: 800;
+      border-radius: 8px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s;
+    }
+    .a11y-font-btn:hover { background: rgba(201,168,76,.25); }
+    #a11y-font-size-display, #a11y-line-display {
+      font-size: .78rem; font-weight: 700; color: var(--gold); min-width: 36px; text-align: center;
+    }
+    .a11y-credit {
+      text-align: center; font-size: .68rem; color: #555;
+      margin-top: 14px; padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
+    body.a11y-hc  { filter: contrast(1.5) brightness(1.1); }
+    body.a11y-gray { filter: grayscale(1); }
+    body.a11y-hc.a11y-gray { filter: grayscale(1) contrast(1.5) brightness(1.1); }
+    body.a11y-big-cursor, body.a11y-big-cursor * {
+      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpolygon points='0,0 0,32 10,24 16,38 20,36 14,22 26,22' fill='%23C9A84C' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E") 0 0, auto !important;
+    }
+    body.a11y-links a { text-decoration: underline !important; outline: 2px solid var(--gold) !important; outline-offset: 2px; }
+    body.a11y-no-anim *, body.a11y-no-anim *::before, body.a11y-no-anim *::after {
+      animation-play-state: paused !important; transition: none !important;
+    }
+    body.a11y-dyslexia { font-family: 'Courier New', Courier, monospace !important; letter-spacing: .05em; word-spacing: .15em; }
+    body.a11y-focus *:focus { outline: 3px solid var(--gold) !important; outline-offset: 3px !important; }
+    #a11y-reading-guide {
+      display: none; position: fixed; left: 0; right: 0; height: 40px;
+      background: rgba(201,168,76,.18);
+      border-top: 2px solid var(--gold); border-bottom: 2px solid var(--gold);
+      pointer-events: none; z-index: 8888;
+    }
+    body.a11y-guide #a11y-reading-guide { display: block; }
+
+    /* ── RESPONSIVE ── */
     @media (max-width: 960px) {
       section { padding: 60px 24px; }
       .hero { grid-template-columns: 1fr; }
@@ -536,241 +1028,305 @@
       .cta-section { padding: 0 24px 60px; }
       .cta-banner { padding: 40px 28px; }
       footer { padding: 40px 24px 24px; }
+      #a11y-panel { width: calc(100vw - 40px); left: 20px; bottom: 90px; }
+      #a11y-toggle { bottom: 20px; left: 20px; }
     }
     @media (max-width: 500px) {
       .footer-grid { grid-template-columns: 1fr; }
       .hero-left { padding: 48px 24px; }
     }
   </style>
+</head>
 
-  <!-- ═══════════════ WIDGET DE ACESSIBILIDADE ═══════════════ -->
-  <style>
-    /* ── Botão flutuante ── */
-    #a11y-toggle {
-      position: fixed;
-      bottom: 28px; left: 28px;
-      z-index: 9998;
-      width: 56px; height: 56px;
-      border-radius: 50%;
-      background: var(--gold);
-      color: var(--dark);
-      border: none; cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.6rem;
-      box-shadow: 0 4px 20px rgba(201,168,76,.5);
-      transition: transform .2s, box-shadow .2s;
-      animation: pulseBtn 3s ease-in-out infinite;
-    }
-    #a11y-toggle:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(201,168,76,.7); }
-    #a11y-toggle:focus { outline: 3px solid var(--gold); outline-offset: 4px; }
-    @keyframes pulseBtn {
-      0%,100% { box-shadow: 0 4px 20px rgba(201,168,76,.5); }
-      50%      { box-shadow: 0 4px 32px rgba(201,168,76,.85); }
-    }
+<!-- ── OVERLAYS e SIDEBARS (fora do body por posicionamento fixed) ── -->
 
-    /* ── Painel ── */
-    #a11y-panel {
-      position: fixed;
-      bottom: 96px; left: 28px;
-      z-index: 9997;
-      width: 300px;
-      background: #111;
-      border: 1px solid rgba(201,168,76,.3);
-      border-radius: 18px;
-      padding: 20px;
-      box-shadow: 0 16px 56px rgba(0,0,0,.7);
-      transform: translateY(20px) scale(.95);
-      opacity: 0;
-      pointer-events: none;
-      transition: transform .25s ease, opacity .25s ease;
-    }
-    #a11y-panel.open {
-      transform: translateY(0) scale(1);
-      opacity: 1;
-      pointer-events: all;
-    }
+<!-- Overlay carrinho -->
+<div id="overlay"></div>
 
-    .a11y-panel-header {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 16px;
-      padding-bottom: 14px;
-      border-bottom: 1px solid rgba(255,255,255,.08);
-    }
-    .a11y-panel-header h3 {
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 1.1rem; letter-spacing: .06em;
-      color: var(--gold);
-    }
-    .a11y-reset {
-      background: none; border: 1px solid rgba(255,255,255,.15);
-      color: #888; font-size: .72rem; font-weight: 700;
-      padding: 4px 10px; border-radius: 6px; cursor: pointer;
-      transition: border-color .2s, color .2s;
-    }
-    .a11y-reset:hover { border-color: var(--gold); color: var(--gold); }
+<!-- Carrinho sidebar -->
+<aside id="cart-sidebar" aria-label="Carrinho de compras">
+  <div class="cart-header">
+    <h3>🛒 Seu Carrinho</h3>
+    <button id="close-cart">✕</button>
+  </div>
+  <div id="cart-items"></div>
+  <div class="cart-footer">
+    <div class="cart-total">
+      <span>Total:</span>
+      <strong id="cart-total">R$ 0,00</strong>
+    </div>
+    <button class="checkout-btn">Finalizar Compra</button>
+  </div>
+</aside>
 
-    /* ── Grid de funções ── */
-    .a11y-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 8px; margin-bottom: 14px;
-    }
-    .a11y-btn-item {
-      display: flex; flex-direction: column; align-items: center; gap: 5px;
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 12px;
-      padding: 12px 8px;
-      cursor: pointer;
-      font-size: .72rem; font-weight: 700; color: #bbb;
-      text-align: center; line-height: 1.3;
-      transition: background .2s, border-color .2s, color .2s;
-      user-select: none;
-    }
-    .a11y-btn-item:hover { background: rgba(201,168,76,.08); border-color: rgba(201,168,76,.3); color: var(--gold); }
-    .a11y-btn-item.active { background: rgba(201,168,76,.15); border-color: var(--gold); color: var(--gold); }
-    .a11y-btn-item:focus { outline: 2px solid var(--gold); outline-offset: 2px; }
-    .a11y-btn-item .ico { font-size: 1.4rem; }
+<!-- ══════════════════════════════════════════════
+     MODAL DE AUTENTICAÇÃO (Login / Cadastro / Recuperar)
+══════════════════════════════════════════════ -->
+<div id="auth-overlay" role="dialog" aria-modal="true" aria-label="Autenticação">
+  <div class="auth-box">
+    <button class="auth-close" id="auth-close" aria-label="Fechar">✕</button>
 
-    /* ── Controle de fonte ── */
-    .a11y-font-row {
-      display: flex; align-items: center; justify-content: space-between;
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 12px; padding: 10px 14px;
-      margin-bottom: 8px;
-    }
-    .a11y-font-row span { font-size: .75rem; font-weight: 700; color: #bbb; }
-    .a11y-font-controls { display: flex; gap: 6px; align-items: center; }
-    .a11y-font-btn {
-      width: 30px; height: 30px;
-      background: rgba(201,168,76,.12); border: 1px solid rgba(201,168,76,.3);
-      color: var(--gold); font-size: 1rem; font-weight: 800;
-      border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-      transition: background .2s;
-    }
-    .a11y-font-btn:hover { background: rgba(201,168,76,.25); }
-    #a11y-font-size-display {
-      font-size: .78rem; font-weight: 700; color: var(--gold); min-width: 36px; text-align: center;
-    }
+    <!-- Topo com logo -->
+    <div class="auth-header">
+      <div class="auth-logo">⚽</div>
+      <div class="auth-title">Brazilian <span>Sportswear</span></div>
+      <div class="auth-subtitle" id="auth-header-sub">Acesse sua conta ou crie uma nova</div>
+    </div>
 
-    /* ── Espaçamento de linha ── */
-    .a11y-spacing-row {
-      display: flex; align-items: center; justify-content: space-between;
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 12px; padding: 10px 14px;
-      margin-bottom: 8px;
-    }
-    .a11y-spacing-row span { font-size: .75rem; font-weight: 700; color: #bbb; }
+    <!-- Abas Login / Cadastro -->
+    <div class="auth-tabs" id="auth-tabs">
+      <button class="auth-tab active" data-tab="login">Entrar</button>
+      <button class="auth-tab" data-tab="register">Cadastrar</button>
+    </div>
 
-    /* ── Crédito ── */
-    .a11y-credit {
-      text-align: center; font-size: .68rem; color: #555;
-      margin-top: 14px; padding-top: 12px;
-      border-top: 1px solid rgba(255,255,255,.06);
-    }
+    <div class="auth-body">
 
-    /* ── MODOS APLICADOS AO BODY ── */
+      <!-- ─── PAINEL LOGIN ─── -->
+      <div class="auth-panel active" id="panel-login">
+        <div class="auth-field">
+          <label>Email</label>
+          <div class="field-wrap">
+            <input type="email" id="login-email" placeholder="seu@email.com" autocomplete="email">
+          </div>
+          <div class="field-error">Por favor, insira um e-mail válido.</div>
+        </div>
 
-    /* Alto contraste */
-    body.a11y-hc {
-      filter: contrast(1.5) brightness(1.1);
-    }
-    /* Escala de cinza */
-    body.a11y-gray {
-      filter: grayscale(1);
-    }
-    body.a11y-hc.a11y-gray {
-      filter: grayscale(1) contrast(1.5) brightness(1.1);
-    }
-    /* Fundo escuro extra */
-    body.a11y-dark-bg {
-      background: #000 !important;
-    }
-    /* Cursor grande */
-    body.a11y-big-cursor,
-    body.a11y-big-cursor * {
-      cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cpolygon points='0,0 0,32 10,24 16,38 20,36 14,22 26,22' fill='%23C9A84C' stroke='%23000' stroke-width='2'/%3E%3C/svg%3E") 0 0, auto !important;
-    }
-    /* Realçar links */
-    body.a11y-links a {
-      text-decoration: underline !important;
-      outline: 2px solid var(--gold) !important;
-      outline-offset: 2px;
-    }
-    /* Pausar animações */
-    body.a11y-no-anim *,
-    body.a11y-no-anim *::before,
-    body.a11y-no-anim *::after {
-      animation-play-state: paused !important;
-      transition: none !important;
-    }
-    /* Dislexia */
-    body.a11y-dyslexia {
-      font-family: 'Courier New', Courier, monospace !important;
-      letter-spacing: .05em;
-      word-spacing: .15em;
-    }
-    /* Foco visível sempre */
-    body.a11y-focus *:focus {
-      outline: 3px solid var(--gold) !important;
-      outline-offset: 3px !important;
-    }
+        <div class="auth-field">
+          <label>Senha</label>
+          <div class="field-wrap">
+            <input type="password" id="login-password" placeholder="Sua senha" autocomplete="current-password">
+            <span class="field-icon" id="toggle-login-pw">👁</span>
+          </div>
+          <div class="field-error">A senha deve ter pelo menos 6 caracteres.</div>
+        </div>
 
-    /* Guia de leitura */
-    #a11y-reading-guide {
-      display: none;
-      position: fixed;
-      left: 0; right: 0;
-      height: 40px;
-      background: rgba(201,168,76,.18);
-      border-top: 2px solid var(--gold);
-      border-bottom: 2px solid var(--gold);
-      pointer-events: none;
-      z-index: 8888;
-    }
-    body.a11y-guide #a11y-reading-guide { display: block; }
+        <div class="auth-forgot">
+          <a id="go-forgot" href="#">Esqueci minha senha</a>
+        </div>
 
-    @media (max-width: 600px) {
-      #a11y-panel { width: calc(100vw - 40px); left: 20px; bottom: 90px; }
-      #a11y-toggle { bottom: 20px; left: 20px; }
-    }
-  </style>
+        <button class="auth-submit" id="btn-login-submit">Entrar na conta →</button>
+
+        <div class="auth-divider">ou</div>
+
+        <button class="auth-google" id="btn-google-login">
+          <div class="google-g">G</div>
+          Entrar com Google
+        </button>
+
+        <div class="auth-switch">
+          Não tem conta? <a id="go-register">Criar conta grátis</a>
+        </div>
+      </div>
+
+      <!-- ─── PAINEL CADASTRO ─── -->
+      <div class="auth-panel" id="panel-register">
+        <div class="auth-field">
+          <label>Nome completo</label>
+          <div class="field-wrap">
+            <input type="text" id="reg-name" placeholder="Seu nome" autocomplete="name">
+          </div>
+          <div class="field-error">Por favor, insira seu nome completo.</div>
+        </div>
+
+        <div class="auth-field">
+          <label>Email</label>
+          <div class="field-wrap">
+            <input type="email" id="reg-email" placeholder="seu@email.com" autocomplete="email">
+          </div>
+          <div class="field-error">Por favor, insira um e-mail válido.</div>
+        </div>
+
+        <div class="auth-field">
+          <label>Senha</label>
+          <div class="field-wrap">
+            <input type="password" id="reg-password" placeholder="Mínimo 8 caracteres" autocomplete="new-password">
+            <span class="field-icon" id="toggle-reg-pw">👁</span>
+          </div>
+          <div class="password-strength">
+            <div class="password-strength-bar" id="strength-bar"></div>
+          </div>
+          <div class="strength-label" id="strength-label"></div>
+          <div class="field-error">A senha deve ter pelo menos 8 caracteres.</div>
+        </div>
+
+        <div class="auth-field">
+          <label>Confirmar senha</label>
+          <div class="field-wrap">
+            <input type="password" id="reg-password2" placeholder="Repita a senha" autocomplete="new-password">
+          </div>
+          <div class="field-error">As senhas não coincidem.</div>
+        </div>
+
+        <div class="auth-terms">
+          <input type="checkbox" id="reg-terms">
+          <label for="reg-terms">
+            Aceito os <a href="#">termos de uso</a> e a <a href="#">política de privacidade</a> da Brazilian Sportswear.
+          </label>
+        </div>
+
+        <button class="auth-submit" id="btn-register-submit">Criar conta grátis →</button>
+
+        <div class="auth-divider">ou</div>
+
+        <button class="auth-google" id="btn-google-register">
+          <div class="google-g">G</div>
+          Cadastrar com Google
+        </button>
+
+        <div class="auth-switch">
+          Já tem conta? <a id="go-login">Entrar na minha conta</a>
+        </div>
+      </div>
+
+      <!-- ─── PAINEL ESQUECI SENHA ─── -->
+      <div class="auth-panel" id="panel-forgot">
+        <p style="font-size:.85rem;color:#888;margin-bottom:20px;line-height:1.6;">
+          Informe seu e-mail cadastrado e enviaremos um link para redefinir sua senha.
+        </p>
+        <div class="auth-field">
+          <label>Email cadastrado</label>
+          <div class="field-wrap">
+            <input type="email" id="forgot-email" placeholder="seu@email.com">
+          </div>
+          <div class="field-error">Por favor, insira um e-mail válido.</div>
+        </div>
+        <button class="auth-submit" id="btn-forgot-submit">Enviar link de recuperação →</button>
+        <div class="auth-switch" style="margin-top:16px;">
+          <a id="go-back-login">← Voltar para o login</a>
+        </div>
+      </div>
+
+      <!-- ─── PAINEL SUCESSO CADASTRO ─── -->
+      <div class="auth-panel" id="panel-success-register">
+        <div class="auth-success">
+          <div class="success-icon">🎉</div>
+          <h3>Bem-vindo ao time!</h3>
+          <p>Sua conta foi criada com sucesso. Você já está logado e pronto para aproveitar todos os benefícios da Brazilian Sportswear.</p>
+        </div>
+      </div>
+
+      <!-- ─── PAINEL SUCESSO RECUPERAÇÃO ─── -->
+      <div class="auth-panel" id="panel-success-forgot">
+        <div class="auth-success">
+          <div class="success-icon">📧</div>
+          <h3>E-mail enviado!</h3>
+          <p>Verifique sua caixa de entrada. O link de recuperação é válido por 30 minutos.</p>
+        </div>
+      </div>
+
+    </div><!-- /auth-body -->
+  </div><!-- /auth-box -->
+</div><!-- /auth-overlay -->
+
+<!-- Modal imagem produto -->
+<div id="image-modal">
+  <span id="close-image">✕</span>
+  <div id="image-preview"></div>
+</div>
+
+<!-- Guia de leitura -->
+<div id="a11y-reading-guide" role="presentation" aria-hidden="true"></div>
+
 <body>
 
   <!-- ANNOUNCEMENT BAR -->
-  <div class="announce" role="banner" aria-label="Promoção">
+  <div class="announce" role="banner">
     🌧️ IMPERMEÁVEL DE VERDADE &nbsp;·&nbsp; <span>Frete grátis para todo o Brasil acima de R$299</span> &nbsp;·&nbsp; 🇧🇷 FEITO NO BRASIL
   </div>
 
   <!-- NAV -->
   <nav role="navigation" aria-label="Navegação principal">
     <a href="#" class="logo-wrap" aria-label="Brazilian Sportswear – início">
-      <div class="logo-flag" aria-hidden="true">⚽</div>
+      <div class="logo-flag">⚽</div>
       <div>
         <div class="logo-text">Brazilian <span>Sportswear</span></div>
         <div class="logo-sub">Petrópolis · RJ · Desde 2021</div>
       </div>
     </a>
+
     <ul class="nav-links" role="list">
       <li><a href="#kits">Kits</a></li>
       <li><a href="#diferenciais">Diferenciais</a></li>
       <li><a href="#tecnologia">Tecnologia</a></li>
       <li><a href="#sustentabilidade">Sustentabilidade</a></li>
     </ul>
+
     <div class="nav-right">
-      <button class="btn-login" aria-label="Entrar na conta">Entrar</button>
-      <button class="btn-cart" aria-label="Ver carrinho de compras">🛒 Carrinho</button>
+      <!-- Botão ENTRAR (não logado) -->
+      <button class="btn-login" id="btn-open-auth" aria-label="Entrar na conta">Entrar</button>
+
+      <!-- Menu usuário logado (oculto por padrão) -->
+      <div class="user-menu-wrap" id="user-menu-wrap">
+        <div class="user-trigger" id="user-trigger" aria-haspopup="true" aria-expanded="false" tabindex="0">
+          <div class="user-avatar" id="nav-avatar"></div>
+          <span class="user-name" id="nav-name"></span>
+          <span class="user-caret">▼</span>
+        </div>
+
+        <!-- Dropdown -->
+        <div class="user-dropdown" id="user-dropdown" role="menu">
+          <!-- Cabeçalho com info do usuário -->
+          <div class="dd-header">
+            <div class="dd-avatar" id="dd-avatar"></div>
+            <div>
+              <div class="dd-info-name" id="dd-name"></div>
+              <div class="dd-info-email" id="dd-email"></div>
+            </div>
+          </div>
+
+          <!-- Estatísticas rápidas -->
+          <div class="dd-stats">
+            <div class="dd-stat">
+              <div class="dd-stat-n" id="dd-orders">0</div>
+              <div class="dd-stat-l">Pedidos</div>
+            </div>
+            <div class="dd-stat">
+              <div class="dd-stat-n" id="dd-points">0</div>
+              <div class="dd-stat-l">Pontos</div>
+            </div>
+            <div class="dd-stat">
+              <div class="dd-stat-n" id="dd-savings">R$0</div>
+              <div class="dd-stat-l">Economizado</div>
+            </div>
+          </div>
+
+          <!-- Menu itens -->
+          <div class="dd-menu">
+            <a class="dd-item" href="#" role="menuitem">
+              <div class="dd-icon">📦</div> Meus pedidos
+            </a>
+            <a class="dd-item" href="#" role="menuitem">
+              <div class="dd-icon">📍</div> Endereços
+            </a>
+            <a class="dd-item" href="#" role="menuitem">
+              <div class="dd-icon">💳</div> Pagamentos
+            </a>
+            <a class="dd-item" href="#" role="menuitem">
+              <div class="dd-icon">❤️</div> Lista de desejos
+            </a>
+            <a class="dd-item" href="#" role="menuitem">
+              <div class="dd-icon">⚙️</div> Minha conta
+            </a>
+            <div class="dd-sep"></div>
+            <div class="dd-item danger" id="btn-logout" role="menuitem" tabindex="0">
+              <div class="dd-icon">🚪</div> Sair da conta
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Carrinho -->
+      <button class="btn-cart" id="btn-cart-open" aria-label="Abrir carrinho">🛒 Carrinho</button>
     </div>
   </nav>
 
   <!-- HERO -->
   <section class="hero" aria-labelledby="hero-title">
     <div class="hero-left">
-      <div class="hero-eyebrow" aria-label="Novidade">🇧🇷 Nova Coleção 2025</div>
+      <div class="hero-eyebrow">🇧🇷 Nova Coleção 2025</div>
       <h1 id="hero-title">
-        ESTILO<br/>
-        <span class="hl">BRASILEIRO</span><br/>
+        ESTILO<br>
+        <span class="hl">BRASILEIRO</span><br>
         <span class="hl2">SEM LIMITES</span>
       </h1>
       <p class="hero-desc">
@@ -788,7 +1344,6 @@
         <a href="#tecnologia" class="btn-outline">Como funciona</a>
       </div>
     </div>
-
     <div class="hero-right" aria-hidden="true">
       <div class="brasil-stripe"></div>
       <div class="product-showcase">
@@ -806,7 +1361,7 @@
   </section>
 
   <!-- BRAND STRIP -->
-  <div class="brand-strip" role="list" aria-label="Diferenciais rápidos">
+  <div class="brand-strip" role="list">
     <div class="item" role="listitem"><span>💧</span> Tecnologia Impermeável</div>
     <div class="item" role="listitem"><span>🚀</span> Entrega Expressa</div>
     <div class="item" role="listitem"><span>♻️</span> Tecidos Sustentáveis</div>
@@ -830,7 +1385,7 @@
         <div class="product-img green-bg">
           <div class="kit-label">KIT COMPLETO</div>
           <div class="waterproof">IMPERMEÁVEL</div>
-          👕🩳🧢
+          <img src="/41DFxwp33oL._AC_SX569_.jpg" alt="Kit Masculino Verde Brasil" class="product-photo">
         </div>
         <div class="product-info">
           <h3>Kit Masculino Verde Brasil</h3>
@@ -839,7 +1394,7 @@
             <small>3x R$83,30 sem juros</small>
           </div>
           <p class="pix-tag">💸 5% OFF no PIX</p>
-          <button class="btn-buy" aria-label="Comprar Kit Masculino Verde Brasil">Comprar agora</button>
+          <button class="btn-buy">Comprar agora</button>
         </div>
       </article>
 
@@ -847,7 +1402,7 @@
         <div class="product-img yellow-bg">
           <div class="kit-label">KIT COMPLETO</div>
           <div class="waterproof">IMPERMEÁVEL</div>
-          👗🧥🧢
+          <img src="/41DFxwp33oL._AC_SX569_.jpg" alt="Kit Feminino Ouro Amarelo" class="product-photo">
         </div>
         <div class="product-info">
           <h3>Kit Feminino Ouro Amarelo</h3>
@@ -856,7 +1411,7 @@
             <small>3x R$96,63 sem juros</small>
           </div>
           <p class="pix-tag">💸 5% OFF no PIX</p>
-          <button class="btn-buy" aria-label="Comprar Kit Feminino Ouro Amarelo">Comprar agora</button>
+          <button class="btn-buy">Comprar agora</button>
         </div>
       </article>
 
@@ -864,7 +1419,7 @@
         <div class="product-img blue-bg">
           <div class="kit-label">DESTAQUE</div>
           <div class="waterproof">IMPERMEÁVEL</div>
-          🧥
+          <img src="/41DFxwp33oL._AC_SX569_.jpg" alt="Jaqueta Corta-Vento Azul" class="product-photo">
         </div>
         <div class="product-info">
           <h3>Jaqueta Corta-Vento Azul</h3>
@@ -873,7 +1428,7 @@
             <small>2x R$79,95 sem juros</small>
           </div>
           <p class="pix-tag">💸 5% OFF no PIX</p>
-          <button class="btn-buy" aria-label="Comprar Jaqueta Corta-Vento Azul">Comprar agora</button>
+          <button class="btn-buy">Comprar agora</button>
         </div>
       </article>
 
@@ -881,7 +1436,7 @@
         <div class="product-img dark-bg">
           <div class="kit-label">MAIS VENDIDO</div>
           <div class="waterproof">IMPERMEÁVEL</div>
-          👕
+          <img src="/41DFxwp33oL._AC_SX569_.jpg" alt="Camiseta Impermeável Unissex" class="product-photo">
         </div>
         <div class="product-info">
           <h3>Camiseta Impermeável Unissex</h3>
@@ -890,7 +1445,7 @@
             <small>Parcele em até 3x</small>
           </div>
           <p class="pix-tag">💸 5% OFF no PIX</p>
-          <button class="btn-buy" aria-label="Comprar Camiseta Impermeável Unissex">Comprar agora</button>
+          <button class="btn-buy">Comprar agora</button>
         </div>
       </article>
 
@@ -1010,53 +1565,25 @@
     <h2 class="section-title" id="pub-title">PARA TODOS OS ESPORTISTAS</h2>
     <p class="section-sub">Independente da modalidade ou faixa etária, temos o kit perfeito para você.</p>
     <div class="pub-grid" role="list">
-      <div class="pub-card" role="listitem">
-        <div class="pi">🏃</div>
-        <h3>Corredores</h3>
-        <p>Corrida, maratona e trilha</p>
-      </div>
-      <div class="pub-card" role="listitem">
-        <div class="pi">⚽</div>
-        <h3>Futebol</h3>
-        <p>Campo, society e futsal</p>
-      </div>
-      <div class="pub-card" role="listitem">
-        <div class="pi">🚴</div>
-        <h3>Ciclistas</h3>
-        <p>Estrada e mountain bike</p>
-      </div>
-      <div class="pub-card" role="listitem">
-        <div class="pi">🧗</div>
-        <h3>Aventura</h3>
-        <p>Trekking e escalada</p>
-      </div>
-      <div class="pub-card" role="listitem">
-        <div class="pi">👧</div>
-        <h3>Todas as idades</h3>
-        <p>Do juvenil ao adulto</p>
-      </div>
-      <div class="pub-card" role="listitem">
-        <div class="pi">🏋️</div>
-        <h3>Academia</h3>
-        <p>Treino indoor e outdoor</p>
-      </div>
+      <div class="pub-card" role="listitem"><div class="pi">🏃</div><h3>Corredores</h3><p>Corrida, maratona e trilha</p></div>
+      <div class="pub-card" role="listitem"><div class="pi">⚽</div><h3>Futebol</h3><p>Campo, society e futsal</p></div>
+      <div class="pub-card" role="listitem"><div class="pi">🚴</div><h3>Ciclistas</h3><p>Estrada e mountain bike</p></div>
+      <div class="pub-card" role="listitem"><div class="pi">🧗</div><h3>Aventura</h3><p>Trekking e escalada</p></div>
+      <div class="pub-card" role="listitem"><div class="pi">👧</div><h3>Todas as idades</h3><p>Do juvenil ao adulto</p></div>
+      <div class="pub-card" role="listitem"><div class="pi">🏋️</div><h3>Academia</h3><p>Treino indoor e outdoor</p></div>
     </div>
   </section>
 
   <!-- CTA BANNER -->
   <div class="cta-section">
-    <div class="cta-banner" aria-labelledby="cta-title">
+    <div class="cta-banner">
       <div>
-        <h2 id="cta-title">PRONTO PARA<br/><span>VESTIR O BRASIL?</span></h2>
+        <h2>PRONTO PARA<br><span>VESTIR O BRASIL?</span></h2>
         <p>Kits masculinos, femininos e peças avulsas. Frete grátis acima de R$299.</p>
       </div>
       <div class="cta-actions">
-        <a href="#kits" class="btn-primary" style="font-size:1rem;padding:16px 36px;">
-          🛒 Comprar agora
-        </a>
-        <a href="#diferenciais" class="btn-outline" style="color:var(--white);border-color:rgba(255,255,255,.15);padding:14px 36px;">
-          Conhecer a marca
-        </a>
+        <a href="#kits" class="btn-primary" style="font-size:1rem;padding:16px 36px;">🛒 Comprar agora</a>
+        <a href="#diferenciais" class="btn-outline" style="padding:14px 36px;">Conhecer a marca</a>
       </div>
     </div>
   </div>
@@ -1065,9 +1592,9 @@
   <footer role="contentinfo">
     <div class="footer-grid">
       <div class="footer-brand">
-        <div class="logo-wrap" style="display:flex;align-items:center;gap:12px;">
+        <div style="display:flex;align-items:center;gap:12px;">
           <div class="logo-flag">⚽</div>
-          <div class="logo-text" style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:#fff;letter-spacing:.04em;">
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:1.3rem;color:#fff;letter-spacing:.04em;">
             Brazilian <span style="color:var(--gold)">Sportswear</span>
           </div>
         </div>
@@ -1076,7 +1603,7 @@
           <div>📍 Rua Raul Veiga, 482 – Quitandinha, Petrópolis/RJ</div>
           <div>📞 (24) 3920-5239</div>
           <div>📱 (24) 99835-5668</div>
-          <div>✉️ <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="fb9a8e9f928f9489929abb99899a819297929a95888b94898f888c9e9a89d5989496d59989">[email&#160;protected]</a></div>
+          <div>✉️ contato@braziliansportswear.com.br</div>
         </div>
       </div>
       <nav class="footer-col" aria-label="Produtos">
@@ -1113,239 +1640,604 @@
     </div>
   </footer>
 
-  <!-- ═══════════════ WIDGET DE ACESSIBILIDADE ═══════════════ -->
-
-  <!-- Guia de leitura (segue o mouse) -->
-  <div id="a11y-reading-guide" role="presentation" aria-hidden="true"></div>
-
-  <!-- Botão flutuante -->
-  <button id="a11y-toggle" aria-label="Abrir painel de acessibilidade" aria-expanded="false" aria-controls="a11y-panel" title="Acessibilidade">
-    ♿
-  </button>
-
-  <!-- Painel -->
+  <!-- WIDGET ACESSIBILIDADE -->
+  <button id="a11y-toggle" aria-label="Abrir painel de acessibilidade" aria-expanded="false" aria-controls="a11y-panel">♿</button>
   <div id="a11y-panel" role="dialog" aria-modal="true" aria-label="Painel de acessibilidade" hidden>
     <div class="a11y-panel-header">
       <h3>♿ Acessibilidade</h3>
-      <button class="a11y-reset" id="a11y-reset-btn" aria-label="Resetar todas as configurações de acessibilidade">Resetar tudo</button>
+      <button class="a11y-reset" id="a11y-reset-btn">Resetar tudo</button>
     </div>
-
-    <!-- Tamanho da fonte -->
     <div class="a11y-font-row" role="group" aria-label="Tamanho da fonte">
       <span>🔤 Tamanho da fonte</span>
       <div class="a11y-font-controls">
-        <button class="a11y-font-btn" id="a11y-font-dec" aria-label="Diminuir fonte">−</button>
-        <span id="a11y-font-size-display" aria-live="polite">100%</span>
-        <button class="a11y-font-btn" id="a11y-font-inc" aria-label="Aumentar fonte">+</button>
+        <button class="a11y-font-btn" id="a11y-font-dec">−</button>
+        <span id="a11y-font-size-display">100%</span>
+        <button class="a11y-font-btn" id="a11y-font-inc">+</button>
       </div>
     </div>
-
-    <!-- Espaçamento de linha -->
     <div class="a11y-spacing-row" role="group" aria-label="Espaçamento de linha">
       <span>↕ Espaçamento de linha</span>
       <div class="a11y-font-controls">
-        <button class="a11y-font-btn" id="a11y-line-dec" aria-label="Diminuir espaçamento">−</button>
-        <span id="a11y-line-display" aria-live="polite" style="font-size:.78rem;font-weight:700;color:var(--gold);min-width:36px;text-align:center;">1.6</span>
-        <button class="a11y-font-btn" id="a11y-line-inc" aria-label="Aumentar espaçamento">+</button>
+        <button class="a11y-font-btn" id="a11y-line-dec">−</button>
+        <span id="a11y-line-display">1.6</span>
+        <button class="a11y-font-btn" id="a11y-line-inc">+</button>
       </div>
     </div>
-
-    <!-- Grid de funções -->
-    <div class="a11y-grid" role="group" aria-label="Opções de visualização">
-
-      <button class="a11y-btn-item" id="btn-hc" aria-pressed="false" aria-label="Alto contraste">
-        <span class="ico">◑</span>Alto contraste
-      </button>
-
-      <button class="a11y-btn-item" id="btn-gray" aria-pressed="false" aria-label="Escala de cinza">
-        <span class="ico">🌑</span>Escala de cinza
-      </button>
-
-      <button class="a11y-btn-item" id="btn-cursor" aria-pressed="false" aria-label="Cursor grande">
-        <span class="ico">🖱️</span>Cursor grande
-      </button>
-
-      <button class="a11y-btn-item" id="btn-links" aria-pressed="false" aria-label="Realçar links">
-        <span class="ico">🔗</span>Realçar links
-      </button>
-
-      <button class="a11y-btn-item" id="btn-anim" aria-pressed="false" aria-label="Pausar animações">
-        <span class="ico">⏸</span>Pausar animações
-      </button>
-
-      <button class="a11y-btn-item" id="btn-guide" aria-pressed="false" aria-label="Guia de leitura">
-        <span class="ico">📏</span>Guia de leitura
-      </button>
-
-      <button class="a11y-btn-item" id="btn-dyslexia" aria-pressed="false" aria-label="Fonte para dislexia">
-        <span class="ico">📝</span>Fonte dislexia
-      </button>
-
-      <button class="a11y-btn-item" id="btn-focus" aria-pressed="false" aria-label="Foco sempre visível">
-        <span class="ico">🎯</span>Foco visível
-      </button>
-
+    <div class="a11y-grid" role="group">
+      <button class="a11y-btn-item" id="btn-hc"       aria-pressed="false"><span class="ico">◑</span>Alto contraste</button>
+      <button class="a11y-btn-item" id="btn-gray"     aria-pressed="false"><span class="ico">🌑</span>Escala de cinza</button>
+      <button class="a11y-btn-item" id="btn-cursor"   aria-pressed="false"><span class="ico">🖱️</span>Cursor grande</button>
+      <button class="a11y-btn-item" id="btn-links"    aria-pressed="false"><span class="ico">🔗</span>Realçar links</button>
+      <button class="a11y-btn-item" id="btn-anim"     aria-pressed="false"><span class="ico">⏸</span>Pausar animações</button>
+      <button class="a11y-btn-item" id="btn-guide"    aria-pressed="false"><span class="ico">📏</span>Guia de leitura</button>
+      <button class="a11y-btn-item" id="btn-dyslexia" aria-pressed="false"><span class="ico">📝</span>Fonte dislexia</button>
+      <button class="a11y-btn-item" id="btn-focus"    aria-pressed="false"><span class="ico">🎯</span>Foco visível</button>
     </div>
-
-    <div class="a11y-credit">
-      Ferramenta de acessibilidade · Brazilian Sportswear
-    </div>
+    <div class="a11y-credit">Ferramenta de acessibilidade · Brazilian Sportswear</div>
   </div>
 
   <script>
-    // Rain drops on tech section
-    const rain = document.getElementById('rain');
-    if (rain) {
-      for (let i = 0; i < 18; i++) {
-        const drop = document.createElement('div');
-        drop.classList.add('drop');
-        drop.style.left = Math.random() * 100 + '%';
-        drop.style.height = (Math.random() * 30 + 15) + 'px';
-        drop.style.animationDuration = (Math.random() * 1.2 + 0.6) + 's';
-        drop.style.animationDelay = (Math.random() * 2) + 's';
-        rain.appendChild(drop);
+  /* ═══════════════════════════════════════════════════════════
+     UTILITÁRIOS
+  ═══════════════════════════════════════════════════════════ */
+  const $ = id => document.getElementById(id);
+  const qs = sel => document.querySelector(sel);
+
+  /* ═══════════════════════════════════════════════════════════
+     RAIN DROPS – seção tecnologia
+  ═══════════════════════════════════════════════════════════ */
+  const rain = $('rain');
+  if (rain) {
+    for (let i = 0; i < 18; i++) {
+      const d = document.createElement('div');
+      d.className = 'drop';
+      d.style.left = Math.random() * 100 + '%';
+      d.style.height = (Math.random() * 30 + 15) + 'px';
+      d.style.animationDuration = (Math.random() * 1.2 + 0.6) + 's';
+      d.style.animationDelay = (Math.random() * 2) + 's';
+      rain.appendChild(d);
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     SCROLL REVEAL
+  ═══════════════════════════════════════════════════════════ */
+  const revealObs = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.style.animation = 'fadeUp 0.5s ease both';
+        revealObs.unobserve(e.target);
       }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.diff-card, .product-card, .pub-card, .tech-item').forEach(el => {
+    el.style.opacity = '0';
+    revealObs.observe(el);
+  });
+
+  /* ═══════════════════════════════════════════════════════════
+     ESTADO DO USUÁRIO (persiste em localStorage)
+  ═══════════════════════════════════════════════════════════ */
+  let currentUser = null;
+
+  function loadUser() {
+    try {
+      const saved = localStorage.getItem('bs_user');
+      if (saved) currentUser = JSON.parse(saved);
+    } catch (e) {}
+  }
+
+  function saveUser(user) {
+    currentUser = user;
+    localStorage.setItem('bs_user', JSON.stringify(user));
+  }
+
+  function clearUser() {
+    currentUser = null;
+    localStorage.removeItem('bs_user');
+  }
+
+  /* Iniciais do nome */
+  function initials(name) {
+    return name.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase();
+  }
+
+  /* ─────────────────────────────────────────
+     Atualizar a navbar conforme estado
+  ───────────────────────────────────────── */
+  function updateNavUI() {
+    const loginBtn   = $('btn-open-auth');
+    const menuWrap   = $('user-menu-wrap');
+
+    if (currentUser) {
+      // Mostrar menu do usuário, esconder botão entrar
+      loginBtn.style.display = 'none';
+      menuWrap.classList.add('visible');
+
+      const inits = initials(currentUser.name);
+
+      // Preencher avatar e nome na navbar
+      $('nav-avatar').textContent = inits;
+      $('nav-name').textContent = currentUser.name.split(' ')[0];
+
+      // Preencher dropdown
+      $('dd-avatar').textContent = inits;
+      $('dd-name').textContent = currentUser.name;
+      $('dd-email').textContent = currentUser.email;
+
+      // Stats simulados
+      const orders   = currentUser.orders   || 0;
+      const points   = currentUser.points   || 0;
+      const savings  = currentUser.savings  || 0;
+      $('dd-orders').textContent  = orders;
+      $('dd-points').textContent  = points;
+      $('dd-savings').textContent = 'R$' + savings;
+
+    } else {
+      loginBtn.style.display = '';
+      menuWrap.classList.remove('visible');
+      menuWrap.classList.remove('open');
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════════════
+     MODAL DE AUTENTICAÇÃO
+  ═══════════════════════════════════════════════════════════ */
+  const authOverlay = $('auth-overlay');
+
+  function openAuth(tab) {
+    authOverlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    switchTab(tab || 'login');
+  }
+
+  function closeAuth() {
+    authOverlay.classList.remove('open');
+    document.body.style.overflow = '';
+    // Limpar inputs
+    authOverlay.querySelectorAll('input').forEach(i => { i.value = ''; });
+    authOverlay.querySelectorAll('.auth-field').forEach(f => f.classList.remove('has-error'));
+  }
+
+  // Botão abrir
+  $('btn-open-auth').addEventListener('click', () => openAuth('login'));
+  $('auth-close').addEventListener('click', closeAuth);
+  authOverlay.addEventListener('click', e => { if (e.target === authOverlay) closeAuth(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAuth(); });
+
+  /* ── Abas ── */
+  const tabs = document.querySelectorAll('.auth-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+  });
+
+  function switchTab(name) {
+    // Ativar aba
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+    // Mostrar painéis
+    showPanel('panel-' + name);
+    // Atualizar subtítulo
+    const subtitles = {
+      login: 'Acesse sua conta',
+      register: 'Crie sua conta grátis',
+      forgot: 'Recuperação de senha'
+    };
+    $('auth-header-sub').textContent = subtitles[name] || '';
+    // Controlar visibilidade das abas
+    $('auth-tabs').style.display = (name === 'forgot') ? 'none' : 'flex';
+  }
+
+  function showPanel(id) {
+    document.querySelectorAll('.auth-panel').forEach(p => p.classList.remove('active'));
+    const el = $(id);
+    if (el) el.classList.add('active');
+  }
+
+  // Links de troca de painel
+  $('go-forgot').addEventListener('click', e => { e.preventDefault(); switchTab('forgot'); });
+  $('go-register').addEventListener('click', () => switchTab('register'));
+  $('go-login').addEventListener('click', () => switchTab('login'));
+  $('go-back-login').addEventListener('click', () => switchTab('login'));
+
+  /* ── Mostrar/ocultar senhas ── */
+  function togglePw(inputId, iconId) {
+    const input = $(inputId);
+    const icon  = $(iconId);
+    const showing = input.type === 'text';
+    input.type = showing ? 'password' : 'text';
+    icon.textContent = showing ? '👁' : '🙈';
+  }
+  $('toggle-login-pw').addEventListener('click', () => togglePw('login-password', 'toggle-login-pw'));
+  $('toggle-reg-pw').addEventListener('click',   () => togglePw('reg-password', 'toggle-reg-pw'));
+
+  /* ── Força da senha ── */
+  $('reg-password').addEventListener('input', function () {
+    const val = this.value;
+    let score = 0;
+    if (val.length >= 8)  score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+
+    const bar   = $('strength-bar');
+    const label = $('strength-label');
+    const colors  = ['#ff4444', '#ff9900', '#ffcc00', '#22A050'];
+    const labels  = ['Muito fraca', 'Fraca', 'Boa', 'Forte'];
+    const widths  = ['20%', '45%', '70%', '100%'];
+
+    if (val.length === 0) {
+      bar.style.width = '0';
+      label.textContent = '';
+    } else {
+      const idx = Math.max(0, score - 1);
+      bar.style.width      = widths[idx];
+      bar.style.background = colors[idx];
+      label.style.color    = colors[idx];
+      label.textContent    = labels[idx];
+    }
+  });
+
+  /* ── Validações ── */
+  function validateEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
+
+  function setFieldError(fieldEl, hasError) {
+    fieldEl.classList.toggle('has-error', hasError);
+    const input = fieldEl.querySelector('input');
+    if (input) input.classList.toggle('error', hasError);
+  }
+
+  /* ── LOGIN ── */
+  $('btn-login-submit').addEventListener('click', () => {
+    const emailEl = $('login-email');
+    const pwEl    = $('login-password');
+    const emailField = emailEl.closest('.auth-field');
+    const pwField    = pwEl.closest('.auth-field');
+
+    let valid = true;
+
+    if (!validateEmail(emailEl.value.trim())) {
+      setFieldError(emailField, true); valid = false;
+    } else { setFieldError(emailField, false); }
+
+    if (pwEl.value.length < 6) {
+      setFieldError(pwField, true); valid = false;
+    } else { setFieldError(pwField, false); }
+
+    if (!valid) return;
+
+    // Simular login bem-sucedido
+    const name = emailEl.value.split('@')[0];
+    const formattedName = name.charAt(0).toUpperCase() + name.slice(1) + ' Silva';
+    saveUser({
+      name: formattedName,
+      email: emailEl.value.trim(),
+      orders: Math.floor(Math.random() * 8),
+      points: Math.floor(Math.random() * 500) + 50,
+      savings: Math.floor(Math.random() * 120) + 10
+    });
+    updateNavUI();
+    closeAuth();
+  });
+
+  /* ── CADASTRO ── */
+  $('btn-register-submit').addEventListener('click', () => {
+    const nameEl  = $('reg-name');
+    const emailEl = $('reg-email');
+    const pwEl    = $('reg-password');
+    const pw2El   = $('reg-password2');
+    const terms   = $('reg-terms');
+
+    const nameField  = nameEl.closest('.auth-field');
+    const emailField = emailEl.closest('.auth-field');
+    const pwField    = pwEl.closest('.auth-field');
+    const pw2Field   = pw2El.closest('.auth-field');
+
+    let valid = true;
+
+    if (nameEl.value.trim().length < 3) {
+      setFieldError(nameField, true); valid = false;
+    } else { setFieldError(nameField, false); }
+
+    if (!validateEmail(emailEl.value.trim())) {
+      setFieldError(emailField, true); valid = false;
+    } else { setFieldError(emailField, false); }
+
+    if (pwEl.value.length < 8) {
+      setFieldError(pwField, true); valid = false;
+    } else { setFieldError(pwField, false); }
+
+    if (pw2El.value !== pwEl.value) {
+      setFieldError(pw2Field, true); valid = false;
+    } else { setFieldError(pw2Field, false); }
+
+    if (!valid) return;
+
+    if (!terms.checked) {
+      alert('Por favor, aceite os termos de uso para continuar.');
+      return;
     }
 
-    // Scroll-reveal
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(e => {
-        if (e.isIntersecting) {
-          e.target.style.animation = 'fadeUp 0.5s ease both';
-          observer.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.1 });
+    // Cadastro bem-sucedido
+    saveUser({
+      name: nameEl.value.trim(),
+      email: emailEl.value.trim(),
+      orders: 0,
+      points: 100,
+      savings: 0
+    });
+    updateNavUI();
+    showPanel('panel-success-register');
+    $('auth-tabs').style.display = 'none';
+    $('auth-header-sub').textContent = 'Conta criada com sucesso!';
 
-    document.querySelectorAll('.diff-card, .product-card, .pub-card, .tech-item').forEach(el => {
-      el.style.opacity = '0';
-      observer.observe(el);
+    setTimeout(() => closeAuth(), 2600);
+  });
+
+  /* ── RECUPERAR SENHA ── */
+  $('btn-forgot-submit').addEventListener('click', () => {
+    const emailEl    = $('forgot-email');
+    const emailField = emailEl.closest('.auth-field');
+
+    if (!validateEmail(emailEl.value.trim())) {
+      setFieldError(emailField, true); return;
+    }
+    setFieldError(emailField, false);
+    showPanel('panel-success-forgot');
+    $('auth-header-sub').textContent = 'Verifique seu e-mail';
+    setTimeout(() => closeAuth(), 3000);
+  });
+
+  /* ── GOOGLE (simulado) ── */
+  function loginWithGoogle() {
+    saveUser({
+      name: 'Usuário Google',
+      email: 'usuario@gmail.com',
+      orders: 2,
+      points: 250,
+      savings: 45
+    });
+    updateNavUI();
+    closeAuth();
+  }
+  $('btn-google-login').addEventListener('click', loginWithGoogle);
+  $('btn-google-register').addEventListener('click', loginWithGoogle);
+
+  /* ═══════════════════════════════════════════════════════════
+     DROPDOWN DO USUÁRIO NA NAVBAR
+  ═══════════════════════════════════════════════════════════ */
+  const userMenuWrap = $('user-menu-wrap');
+  const userTrigger  = $('user-trigger');
+
+  userTrigger.addEventListener('click', () => {
+    const isOpen = userMenuWrap.classList.toggle('open');
+    userTrigger.setAttribute('aria-expanded', isOpen);
+  });
+
+  // Fechar dropdown ao clicar fora
+  document.addEventListener('click', e => {
+    if (!userMenuWrap.contains(e.target)) {
+      userMenuWrap.classList.remove('open');
+      userTrigger.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  // Teclado
+  userTrigger.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      userTrigger.click();
+    }
+  });
+
+  /* ── LOGOUT ── */
+  $('btn-logout').addEventListener('click', () => {
+    if (confirm('Deseja sair da sua conta?')) {
+      clearUser();
+      updateNavUI();
+      userMenuWrap.classList.remove('open');
+    }
+  });
+
+  /* ═══════════════════════════════════════════════════════════
+     CARRINHO
+  ═══════════════════════════════════════════════════════════ */
+  const cartSidebar = $('cart-sidebar');
+  const overlay     = $('overlay');
+  const cartItemsEl = $('cart-items');
+  const totalEl     = $('cart-total');
+  let cart = [];
+
+  function openCart()  { cartSidebar.classList.add('open');    overlay.classList.add('active'); }
+  function closeCart() { cartSidebar.classList.remove('open'); overlay.classList.remove('active'); }
+
+  $('btn-cart-open').addEventListener('click', openCart);
+  $('close-cart').addEventListener('click', closeCart);
+  overlay.addEventListener('click', closeCart);
+
+  document.querySelectorAll('.btn-buy').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const card  = btn.closest('.product-card');
+      const name  = card.querySelector('h3').innerText;
+      const price = parseFloat(
+        card.querySelector('.price').innerText
+          .replace('R$','').replace(/\./g,'').replace(',','.').replace(/[^\d.]/g,'')
+      );
+      const image = card.querySelector('.product-photo').src;
+
+      const existing = cart.find(i => i.name === name);
+      if (existing) { existing.qty++; }
+      else { cart.push({ id: Date.now(), name, price, image, qty: 1 }); }
+
+      renderCart();
+      openCart();
+
+      btn.innerHTML = '✅ Adicionado';
+      btn.style.background = '#22A050';
+      setTimeout(() => { btn.innerHTML = 'Comprar agora'; btn.style.background = ''; }, 1400);
+    });
+  });
+
+  function renderCart() {
+    cartItemsEl.innerHTML = '';
+    let total = 0;
+    cart.forEach(item => {
+      total += item.price * item.qty;
+      const div = document.createElement('div');
+      div.className = 'cart-item';
+      div.innerHTML = `
+        <div class="cart-item-image"><img src="${item.image}"></div>
+        <div class="cart-item-info">
+          <h4>${item.name}</h4>
+          <p>R$ ${(item.price * item.qty).toFixed(2).replace('.',',')}</p>
+          <div class="cart-item-actions">
+            <button class="qty-btn minus">−</button>
+            <span>${item.qty}</span>
+            <button class="qty-btn plus">+</button>
+            <button class="remove-item">remover</button>
+          </div>
+        </div>`;
+
+      div.querySelector('.plus').addEventListener('click', () => { item.qty++; renderCart(); });
+      div.querySelector('.minus').addEventListener('click', () => {
+        if (item.qty > 1) { item.qty--; } else { cart = cart.filter(p => p.id !== item.id); }
+        renderCart();
+      });
+      div.querySelector('.remove-item').addEventListener('click', () => {
+        cart = cart.filter(p => p.id !== item.id);
+        renderCart();
+      });
+      cartItemsEl.appendChild(div);
+    });
+    totalEl.innerText = 'R$ ' + total.toFixed(2).replace('.',',');
+  }
+
+  qs('.checkout-btn').addEventListener('click', () => {
+    if (!cart.length) { alert('Seu carrinho está vazio.'); return; }
+    alert('Compra finalizada com sucesso! 🛒');
+    cart = []; renderCart(); closeCart();
+  });
+
+  /* ═══════════════════════════════════════════════════════════
+     ZOOM IMAGENS
+  ═══════════════════════════════════════════════════════════ */
+  const imageModal   = $('image-modal');
+  const imagePreview = $('image-preview');
+
+  document.querySelectorAll('.product-img').forEach(img => {
+    img.addEventListener('click', () => {
+      const src = img.querySelector('.product-photo').src;
+      imagePreview.innerHTML = `<img src="${src}" class="zoomed-image">`;
+      imageModal.classList.add('open');
+    });
+  });
+  $('close-image').addEventListener('click', () => imageModal.classList.remove('open'));
+  imageModal.addEventListener('click', e => { if (e.target === imageModal) imageModal.classList.remove('open'); });
+
+  /* ═══════════════════════════════════════════════════════════
+     WIDGET DE ACESSIBILIDADE
+  ═══════════════════════════════════════════════════════════ */
+  (function () {
+    const toggle = $('a11y-toggle');
+    const panel  = $('a11y-panel');
+    const body   = document.body;
+
+    toggle.addEventListener('click', () => {
+      const isOpen = panel.classList.toggle('open');
+      panel.hidden = !isOpen;
+      toggle.setAttribute('aria-expanded', isOpen);
+      if (isOpen) $('a11y-reset-btn').focus();
+    });
+    document.addEventListener('click', e => {
+      if (!panel.contains(e.target) && e.target !== toggle) {
+        panel.classList.remove('open'); panel.hidden = true;
+        toggle.setAttribute('aria-expanded', 'false');
+      }
     });
 
-    // ════════════════════════════════════════════
-    //  WIDGET DE ACESSIBILIDADE
-    // ════════════════════════════════════════════
-    (function () {
-      const toggle  = document.getElementById('a11y-toggle');
-      const panel   = document.getElementById('a11y-panel');
-      const body    = document.body;
+    let fontScale = 100;
+    const fontDisplay = $('a11y-font-size-display');
+    $('a11y-font-inc').addEventListener('click', () => {
+      fontScale = Math.min(160, fontScale + 10);
+      document.documentElement.style.fontSize = fontScale + '%';
+      fontDisplay.textContent = fontScale + '%';
+    });
+    $('a11y-font-dec').addEventListener('click', () => {
+      fontScale = Math.max(70, fontScale - 10);
+      document.documentElement.style.fontSize = fontScale + '%';
+      fontDisplay.textContent = fontScale + '%';
+    });
 
-      // ── Abrir / fechar painel ──
-      toggle.addEventListener('click', () => {
-        const isOpen = panel.classList.toggle('open');
-        panel.hidden = !isOpen;
-        toggle.setAttribute('aria-expanded', isOpen);
-        if (isOpen) {
-          document.getElementById('a11y-reset-btn').focus();
-        }
+    let lineH = 1.6;
+    const lineDisplay = $('a11y-line-display');
+    $('a11y-line-inc').addEventListener('click', () => {
+      lineH = Math.min(3.0, +(lineH + 0.2).toFixed(1));
+      body.style.lineHeight = lineH; lineDisplay.textContent = lineH;
+    });
+    $('a11y-line-dec').addEventListener('click', () => {
+      lineH = Math.max(1.2, +(lineH - 0.2).toFixed(1));
+      body.style.lineHeight = lineH; lineDisplay.textContent = lineH;
+    });
+
+    function makeToggle(btnId, cssClass) {
+      const btn = $(btnId);
+      btn.addEventListener('click', () => {
+        const active = body.classList.toggle(cssClass);
+        btn.classList.toggle('active', active);
+        btn.setAttribute('aria-pressed', active);
       });
+    }
+    makeToggle('btn-hc',       'a11y-hc');
+    makeToggle('btn-gray',     'a11y-gray');
+    makeToggle('btn-cursor',   'a11y-big-cursor');
+    makeToggle('btn-links',    'a11y-links');
+    makeToggle('btn-anim',     'a11y-no-anim');
+    makeToggle('btn-dyslexia', 'a11y-dyslexia');
+    makeToggle('btn-focus',    'a11y-focus');
 
-      // fechar ao clicar fora
-      document.addEventListener('click', e => {
-        if (!panel.contains(e.target) && e.target !== toggle) {
-          panel.classList.remove('open');
-          panel.hidden = true;
-          toggle.setAttribute('aria-expanded', 'false');
-        }
+    const guideEl  = $('a11y-reading-guide');
+    const btnGuide = $('btn-guide');
+    let guideOn = false;
+    btnGuide.addEventListener('click', () => {
+      guideOn = !guideOn;
+      body.classList.toggle('a11y-guide', guideOn);
+      btnGuide.classList.toggle('active', guideOn);
+      btnGuide.setAttribute('aria-pressed', guideOn);
+    });
+    document.addEventListener('mousemove', e => {
+      if (!guideOn) return;
+      guideEl.style.top = (e.clientY - 20 + window.scrollY) + 'px';
+    });
+
+    $('a11y-reset-btn').addEventListener('click', () => {
+      ['a11y-hc','a11y-gray','a11y-big-cursor','a11y-links',
+       'a11y-no-anim','a11y-dyslexia','a11y-focus','a11y-guide'].forEach(c => body.classList.remove(c));
+      document.querySelectorAll('.a11y-btn-item').forEach(b => {
+        b.classList.remove('active'); b.setAttribute('aria-pressed', 'false');
       });
+      fontScale = 100;
+      document.documentElement.style.fontSize = '100%';
+      fontDisplay.textContent = '100%';
+      lineH = 1.6;
+      body.style.lineHeight = '1.6';
+      lineDisplay.textContent = '1.6';
+      guideOn = false;
+    });
+  })();
 
-      // fechar com ESC
-      document.addEventListener('keydown', e => {
-        if (e.key === 'Escape') {
-          panel.classList.remove('open');
-          panel.hidden = true;
-          toggle.setAttribute('aria-expanded', 'false');
-          toggle.focus();
-        }
-      });
+  /* ═══════════════════════════════════════════════════════════
+     ANIMAÇÃO DE CARDS
+  ═══════════════════════════════════════════════════════════ */
+  document.querySelectorAll('.product-card').forEach((card, i) => {
+    card.style.animation = `fadeUp .6s ${i * .1}s ease both`;
+  });
 
-      // ── Tamanho da fonte ──
-      let fontScale = 100;
-      const fontDisplay = document.getElementById('a11y-font-size-display');
+  /* ── Inicializar estado do usuário ao carregar ── */
+  loadUser();
+  updateNavUI();
 
-      document.getElementById('a11y-font-inc').addEventListener('click', () => {
-        fontScale = Math.min(160, fontScale + 10);
-        document.documentElement.style.fontSize = fontScale + '%';
-        fontDisplay.textContent = fontScale + '%';
-      });
-      document.getElementById('a11y-font-dec').addEventListener('click', () => {
-        fontScale = Math.max(70, fontScale - 10);
-        document.documentElement.style.fontSize = fontScale + '%';
-        fontDisplay.textContent = fontScale + '%';
-      });
-
-      // ── Espaçamento de linha ──
-      let lineH = 1.6;
-      const lineDisplay = document.getElementById('a11y-line-display');
-
-      document.getElementById('a11y-line-inc').addEventListener('click', () => {
-        lineH = Math.min(3.0, +(lineH + 0.2).toFixed(1));
-        body.style.lineHeight = lineH;
-        lineDisplay.textContent = lineH;
-      });
-      document.getElementById('a11y-line-dec').addEventListener('click', () => {
-        lineH = Math.max(1.2, +(lineH - 0.2).toFixed(1));
-        body.style.lineHeight = lineH;
-        lineDisplay.textContent = lineH;
-      });
-
-      // ── Toggle helper ──
-      function makeToggle(btnId, cssClass, bodyTarget) {
-        const btn = document.getElementById(btnId);
-        btn.addEventListener('click', () => {
-          const active = (bodyTarget || body).classList.toggle(cssClass);
-          btn.classList.toggle('active', active);
-          btn.setAttribute('aria-pressed', active);
-        });
-      }
-
-      makeToggle('btn-hc',       'a11y-hc');
-      makeToggle('btn-gray',     'a11y-gray');
-      makeToggle('btn-cursor',   'a11y-big-cursor');
-      makeToggle('btn-links',    'a11y-links');
-      makeToggle('btn-anim',     'a11y-no-anim');
-      makeToggle('btn-dyslexia', 'a11y-dyslexia');
-      makeToggle('btn-focus',    'a11y-focus');
-
-      // ── Guia de leitura ──
-      const guideEl  = document.getElementById('a11y-reading-guide');
-      const btnGuide = document.getElementById('btn-guide');
-      let guideOn = false;
-
-      btnGuide.addEventListener('click', () => {
-        guideOn = !guideOn;
-        body.classList.toggle('a11y-guide', guideOn);
-        btnGuide.classList.toggle('active', guideOn);
-        btnGuide.setAttribute('aria-pressed', guideOn);
-      });
-
-      document.addEventListener('mousemove', e => {
-        if (!guideOn) return;
-        guideEl.style.top = (e.clientY - 20 + window.scrollY) + 'px';
-      });
-
-      // ── Resetar tudo ──
-      document.getElementById('a11y-reset-btn').addEventListener('click', () => {
-        ['a11y-hc','a11y-gray','a11y-big-cursor','a11y-links',
-         'a11y-no-anim','a11y-dyslexia','a11y-focus','a11y-guide'].forEach(c => body.classList.remove(c));
-
-        document.querySelectorAll('.a11y-btn-item').forEach(b => {
-          b.classList.remove('active');
-          b.setAttribute('aria-pressed', 'false');
-        });
-
-        fontScale = 100;
-        document.documentElement.style.fontSize = '100%';
-        fontDisplay.textContent = '100%';
-
-        lineH = 1.6;
-        body.style.lineHeight = '1.6';
-        lineDisplay.textContent = '1.6';
-
-        guideOn = false;
-      });
-
-    })();
   </script>
 </body>
 </html>
